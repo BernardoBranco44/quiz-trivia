@@ -1,9 +1,5 @@
 import './App.css';
 import React, {useState, useEffect} from 'react';
-import Menu from "./components/Menu"
-import Question from "./components/Question"
-import { nanoid } from 'nanoid'
-
 
 function App() {
   const [quizStart, setQuizStart] = useState(false)
@@ -19,19 +15,12 @@ function App() {
   const [shuffledAnswers, setShuffledAnswers] = useState([])
   const [showResult, setShowResult] = useState(false)
 
-  console.log(allQuestions)
-
-
   useEffect(() => {
     fetch('https://opentdb.com/api.php?amount=5&type=multiple')
     .then((response) => response.json())
     .then((data) => setAllQuestions(data.results));
-    console.log("fire")
-  }, [showResult])
-
-  // useEffect(() => {
-  //   setShuffled(shuffle(allQuestions[currentQuestion].incorrect_answers.concat(allQuestions[currentQuestion].correct_answer)))
-  // }, [allQuestions])
+    setIsShuffled(false)
+  }, [])
 
   function htmlDecode(input) {
     let doc = new DOMParser().parseFromString(input, "text/html");
@@ -48,7 +37,7 @@ function App() {
 
   function onSelect(answer, index) {
     setSelectedAnswerIndex(index)
-    if (answer === currentQuestion.correct_answer) {
+    if (answer === allQuestions[currentQuestion].correct_answer) {
       setSelectedAnswer(true)
     } else {
       setSelectedAnswer(false)
@@ -57,7 +46,6 @@ function App() {
 
   function next() {
     setSelectedAnswerIndex(null)
-    setIsShuffled(false)
 
     setResult((prev) => selectedAnswer ?
     {
@@ -65,10 +53,11 @@ function App() {
     }
     :
     {...prev, wrongAnswers: prev.wrongAnswers + 1})
+
     if (currentQuestion !== allQuestions.length - 1) {
       setCurrentQuestion(prevValue => prevValue + 1)
+      setIsShuffled(false)
     }else {
-      setCurrentQuestion(0)
       setShowResult(true)
     }
   }
@@ -78,13 +67,8 @@ function App() {
   }
 
   function reset() {
-    setShowResult(false)
-    setResult({
-      correctAnswers: 0,
-      wrongAnswers: 0
-    })
+    window.location.reload()
   }
-
 
   if ( quizStart && !isShuffled) {
     setShuffledAnswers(shuffle(allQuestions[currentQuestion].incorrect_answers.concat(allQuestions[currentQuestion].correct_answer)))
@@ -118,6 +102,14 @@ function App() {
       <div>
         <p>Correct Answers: {result.correctAnswers}</p>
         <p>Wrong Answers: {result.wrongAnswers}</p>
+        <ul>
+          {allQuestions.map(question =>(
+            <div>
+              <li>{htmlDecode(question.question)}</li>
+              <p>{htmlDecode(question.correct_answer)}</p>
+            </div>
+          ))}
+        </ul>
         <button onClick={reset}>Reset</button>
       </div>
     )}
