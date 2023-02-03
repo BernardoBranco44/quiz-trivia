@@ -1,0 +1,15 @@
+.single-answer{
+  margin: 10px;
+}
+
+.correct-answer{
+  background-color: #94D7A2;
+}
+
+.wrong-answer{
+  background-color: #F8BCBC;
+}
+
+.selected-answer{
+  background-color: #e615bc;
+}
