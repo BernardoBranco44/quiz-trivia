@@ -79,38 +79,50 @@ function App() {
   return (
     <div className="App">
       {!quizStart && (
-        <div>
-          <h1>Quiz</h1>
-          <button onClick={() => setQuizStart(true)}>Start</button>
+        <div className='quiz-start'>
+          <div className='quiz-start-under'>
+            <h1>Quiz</h1>
+            <button onClick={() => setQuizStart(true)}>Start</button>
           </div>
+        </div>
       )}
     { quizStart && !showResult &&  (
-      <div>
-        <span>{addZero(currentQuestion + 1)}</span>
-        <span>/</span>
-        <span>{addZero(allQuestions.length)}</span>
-      <h2>{htmlDecode(allQuestions[currentQuestion].question)}</h2>
-      <ul>
-        {shuffledAnswers.map((answer, index) => (
-          <li key={answer} onClick={() => onSelect(answer, index)} className={selectedAnswerIndex === index ? "selected-answer" : ""}>{htmlDecode(answer)}</li>
-        ))}
-      </ul>
-      <button disabled={selectedAnswerIndex === null ? "disabled" : ""} onClick={next}>{currentQuestion === allQuestions.length -1 ? "Finish" : "Next"}</button>
-    </div>
+      <div className='body-container'>
+        <div className='main-container'>
+          <div className='question-number'>
+            <span>{addZero(currentQuestion + 1)}</span>
+            <span>/</span>
+            <span>{addZero(allQuestions.length)}</span>
+          </div>
+          <div className='questions-answers'>
+            <h2>{htmlDecode(allQuestions[currentQuestion].question)}</h2>
+            <div className='answers'>
+              {shuffledAnswers.map((answer, index) => (
+                <p key={answer} onClick={() => onSelect(answer, index)} className={selectedAnswerIndex === index ? "selected-answer answer" : "answer"}>{htmlDecode(answer)}</p>
+              ))}
+            </div>
+            </div>
+          <button disabled={selectedAnswerIndex === null ? "disabled" : ""} onClick={next}>{currentQuestion === allQuestions.length -1 ? "Finish" : "Next"}</button>
+        </div>
+      </div>
     )}
     {showResult && (
-      <div>
-        <p>Correct Answers: {result.correctAnswers}</p>
-        <p>Wrong Answers: {result.wrongAnswers}</p>
-        <ul>
-          {allQuestions.map(question =>(
-            <div>
-              <li>{htmlDecode(question.question)}</li>
-              <p>{htmlDecode(question.correct_answer)}</p>
-            </div>
-          ))}
-        </ul>
-        <button onClick={reset}>Reset</button>
+      <div className='body-container'>
+        <div className='main-container'>
+          <div className='answers-results'>
+            <p>Correct Answers: {result.correctAnswers}</p>
+            <p>Wrong Answers: {result.wrongAnswers}</p>
+          </div>
+
+            {allQuestions.map(question =>(
+              <div className='answers-card'>
+                <p className='answer-question'>{htmlDecode(question.question)}</p>
+                <p className='answer-answer'>{htmlDecode(question.correct_answer)}</p>
+              </div>
+            ))}
+
+          <button onClick={reset}>Reset</button>
+        </div>
       </div>
     )}
     </div>
